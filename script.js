@@ -1,15 +1,52 @@
-/* Генерация предсказания должна происходить при клике на кнопку «предсказать судьбу» */
+const predictions = [
+    "Сегодня тебя ждет удача!",
+    "Завтра ты встретишь старого друга.",
+    "На этой неделе тебя ждет неожиданный сюрприз.",
+    "Скоро ты получишь хорошие новости.",
+    "Твои мечты начнут сбываться."
+];
 
-/* Заранее заготовь 3-5 предсказаний и в зависимости от того, как лягут карты судьбы (или что скажет Math.random) показывай их пользователю */
+let previousPrediction = null;
 
-/* Подставляй текст нового предсказания в .current-forecast h1 */
+function getRandomNumber(min, max) {
+    return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
-/* Показывай процент вероятности, с которым предсказание сбудется — в верстке это .current-forecast p */
+function generatePrediction() {
+    const randomIndex = getRandomNumber(0, predictions.length - 1);
+    const predictionText = predictions[randomIndex];
 
-/* Данный процент также нужно генерировать автоматически, он может принимать значения от 0 до 100% */
+    const probability = getRandomNumber(0, 100);
 
-/* Совет: заведи функцию-хелпер, которая будет заниматься только генерацией данных в диапазоне от min до max и используй ее где нужно */
+    return {
+        text: predictionText,
+        probability: `${probability}%`
+    };
+}
 
-/* При генерации нового предсказания старое предсказание должно добавляться в начало списка «Мои предсказания» — .forecasts  */
+function displayCurrentPrediction() {
+    const currentForecast = document.querySelector('.current-forecast');
+    const prediction = generatePrediction();
 
-/* Для добавления предсказания в список воспользуйся шаблоном forecast-item */
+    currentForecast.querySelector('h1').textContent = prediction.text;
+    currentForecast.querySelector('p').textContent = `Вероятность: ${prediction.probability}`;
+
+    if (previousPrediction) {
+        addPredictionToList(previousPrediction);
+    }
+    previousPrediction = prediction;
+}
+
+function addPredictionToList(prediction) {
+    const forecastsContainer = document.querySelector('.forecasts');
+    const forecastTemplate = document.getElementById('forecast-item');
+
+    const forecastItem = forecastTemplate.content.cloneNode(true);
+
+    forecastItem.querySelector('h3').textContent = prediction.text;
+    forecastItem.querySelector('p').textContent = `Вероятность: ${prediction.probability}`;
+
+    forecastsContainer.prepend(forecastItem);
+}
+
+document.querySelector('.forecast-btn').addEventListener('click', displayCurrentPrediction);
