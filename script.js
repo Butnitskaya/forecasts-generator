@@ -6,6 +6,8 @@ const predictions = [
     "Твои мечты начнут сбываться."
 ];
 
+let previousPrediction = null;
+
 function getRandomNumber(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
@@ -29,7 +31,10 @@ function displayCurrentPrediction() {
     currentForecast.querySelector('h1').textContent = prediction.text;
     currentForecast.querySelector('p').textContent = `Вероятность: ${prediction.probability}`;
 
-    addPredictionToList(prediction);
+    if (previousPrediction) {
+        addPredictionToList(previousPrediction);
+    }
+    previousPrediction = prediction;
 }
 
 function addPredictionToList(prediction) {
